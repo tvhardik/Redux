@@ -24,3 +24,32 @@ export const addProduct = createAsyncThunk(
     return response.data;
   },
 );
+
+export const deleteProduct = createAsyncThunk(
+  'products/deleteProduct',
+  async (productId: number) => {
+    const response = await axios.delete(
+      `https://fakestoreapi.com/products/${productId}`,
+    );
+    console.log('response delete-----', response);
+    return productId;
+  },
+);
+
+export const updateProduct = createAsyncThunk(
+  'products/updateProduct',
+  async ({
+    productId,
+    updatedProduct,
+  }: {
+    productId: number;
+    updatedProduct: Product;
+  }) => {
+    const response = await axios.put<Product>(
+      `https://fakestoreapi.com/products/${productId}`,
+      updatedProduct,
+    );
+    console.log('response put-----', response);
+    return response.data;
+  },
+);
