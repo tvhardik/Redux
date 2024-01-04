@@ -1,17 +1,17 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
-import ReduxApp from './src/App'
+import React from 'react';
+import {Provider} from 'react-redux';
+import {PersistGate} from 'redux-persist/integration/react';
+import {store, persistor} from './src/redux/store';
+import AppContainer from './src/AppContainer';
 
-interface AppProps {
-  }
-  
- const App: React.FC<AppProps> = () => {
-
+const App: React.FC = () => {
   return (
-    <View>
-    <ReduxApp/>
-    </View>
-  )
-}
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <AppContainer />
+      </PersistGate>
+    </Provider>
+  );
+};
 
-export default App
+export default App;
