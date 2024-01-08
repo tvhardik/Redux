@@ -11,3 +11,4 @@ export type ProductState = {
   products: Product[];
   loading: boolean;
 };
+export type ProductError = {};

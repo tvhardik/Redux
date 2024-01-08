@@ -11,4 +11,5 @@ export const constant = {
   updatedPrice: 'Updated Price',
   title: 'Title',
   price: 'Price',
+  highRatingProduct: 'High rating product',
 };

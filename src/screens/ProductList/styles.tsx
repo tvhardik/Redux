@@ -16,7 +16,9 @@ export const styles = StyleSheet.create({
     gap: 12,
   },
   mainContainer: {
-    backgroundColor: colors.gray,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
+    paddingTop: 30,
   },
   productImage: {
     height: 100,
@@ -148,8 +150,8 @@ export const styles = StyleSheet.create({
     shadowRadius: 2,
     elevation: 5,
     backgroundColor: colors.darkGray,
-    borderRadius: 12,
-    height: 30,
+    borderRadius: 8,
+    height: 40,
     justifyContent: 'center',
     alignContent: 'center',
   },
@@ -160,8 +162,8 @@ export const styles = StyleSheet.create({
     shadowRadius: 2,
     elevation: 5,
     backgroundColor: colors.lightGray,
-    borderRadius: 12,
-    height: 30,
+    borderRadius: 8,
+    height: 40,
     justifyContent: 'center',
     alignContent: 'center',
   },
@@ -199,5 +201,9 @@ export const styles = StyleSheet.create({
   ratingStarContainer: {
     paddingHorizontal: 80,
     gap: 10,
+  },
+  posterImage: {
+    width: '100%',
+    height: 230,
   },
 });

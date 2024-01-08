@@ -9,6 +9,8 @@ import {
   Appearance,
   Dimensions,
   Alert,
+  SafeAreaView,
+  Pressable,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import ImagePicker from 'react-native-image-crop-picker';
@@ -24,12 +26,12 @@ import {
 } from '../../redux/product/index';
 import {images} from '../../assets';
 import {constant} from '../../constant';
-import {DetalisModal, CustomTextInput} from '../../components';
+import {DetalisModal, CustomTextInput, Button} from '../../components';
 import {colors} from '../../theme/colors';
 import {styles} from './styles';
 
 const ProductList: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch: any = useDispatch();
   const windowWidth = Dimensions.get('window').width;
   const products = useSelector((state: any) => state.products.products);
 
@@ -50,19 +52,20 @@ const ProductList: React.FC = () => {
     price: '',
     image: '',
   });
+
   const [isDarkMode, setIsDarkMode] = useState(
     Appearance.getColorScheme() === 'dark',
   );
 
-  useEffect(() => {
-    const appearanceChangeHandler = ({colorScheme}: {colorScheme: string}) => {
-      setIsDarkMode(colorScheme === 'dark');
-    };
-    Appearance.addChangeListener(appearanceChangeHandler);
-    return () => {
-      Appearance.removeChangeListener(appearanceChangeHandler);
-    };
-  }, []);
+  // useEffect(() => {
+  //   const appearanceChangeHandler = ({colorScheme}: {colorScheme: string}) => {
+  //     setIsDarkMode(colorScheme === 'dark');
+  //   };
+  //   Appearance.addChangeListener(appearanceChangeHandler);
+  //   return () => {
+  //     Appearance.removeChangeListener(appearanceChangeHandler);
+  //   };
+  // }, []);
 
   useEffect(() => {
     dispatch(fetchProducts());
@@ -78,6 +81,7 @@ const ProductList: React.FC = () => {
     const productToUpdate = products.find(
       (product: Product) => product.id === productId,
     );
+
     setUpdatedProduct({
       title: productToUpdate.title,
       price: productToUpdate.price.toString(),
@@ -93,7 +97,7 @@ const ProductList: React.FC = () => {
 
   const handleAddProduct = () => {
     if (!newProduct.title || !newProduct.price || !newProduct.image) {
-      Alert.alert('Error', 'Please fill in all the required fields.');
+      Alert.alert('Please fill in all the required fields.');
       return;
     }
     dispatch(addProduct(newProduct));
@@ -138,23 +142,33 @@ const ProductList: React.FC = () => {
   };
 
   const renderCarouselItem = ({item}) => (
-    <TouchableOpacity style={{flex: 1}} onPress={() => openModal(item)}>
+    <Pressable
+      style={({pressed}) => [pressed && {opacity: 0.2}, {flex: 1}]}
+      onPress={() => openModal(item)}>
       <View style={styles.productContainer}>
-        <Image source={{uri: item.image}} style={styles.productImage} />
+        <Image
+          source={{uri: item.image}}
+          style={styles.productImage}
+          resizeMode="contain"
+        />
         <View style={styles.divider} />
         <Text style={styles.title}>{item.title}</Text>
         <Text style={styles.price}>${item.price}</Text>
       </View>
-    </TouchableOpacity>
+    </Pressable>
   );
 
   return (
-    <View>
+    <SafeAreaView>
       <ScrollView>
+        <Image source={images.shoppingPoster} style={styles.posterImage} />
         <View
-          style={{
-            backgroundColor: isDarkMode ? colors.darkMode : colors.lightMode,
-          }}>
+          style={[
+            styles.mainContainer,
+            {
+              backgroundColor: isDarkMode ? colors.darkMode : colors.lightMode,
+            },
+          ]}>
           <Carousel
             data={highRatedProducts}
             sliderWidth={windowWidth}
@@ -203,19 +217,23 @@ const ProductList: React.FC = () => {
               }
               keyboardType="numeric"
             />
-            <TouchableOpacity onPress={handleOpenGallery}>
-              <Text style={styles.text}>{constant.openGallery}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.grayButton}
-              onPress={handleSaveUpdate}>
-              <Text style={styles.text}>{constant.saveUpdate}</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.lightGrayButton}
-              onPress={() => setUpdateModalVisible(false)}>
-              <Text style={styles.text}>{constant.cancel}</Text>
-            </TouchableOpacity>
+            <Button
+              label={constant.openGallery}
+              onPress={handleOpenGallery}
+              textStyle={styles.text}
+            />
+            <Button
+              label={constant.saveUpdate}
+              onPress={handleSaveUpdate}
+              buttonStyle={styles.grayButton}
+              textStyle={styles.text}
+            />
+            <Button
+              label={constant.cancel}
+              onPress={() => setUpdateModalVisible(false)}
+              buttonStyle={styles.lightGrayButton}
+              textStyle={styles.text}
+            />
           </DetalisModal>
           <Modal
             isVisible={modalVisible}
@@ -231,11 +249,11 @@ const ProductList: React.FC = () => {
                   <Image
                     source={{uri: selectedProduct.image}}
                     style={styles.SelectedProductImage}
+                    resizeMode="contain"
                   />
                   <Text style={styles.SelectedProductCategory}>
                     {selectedProduct.category}
                   </Text>
-
                   <View style={styles.ratingStarContainer}>
                     <StarRating
                       disabled={true}
@@ -251,16 +269,18 @@ const ProductList: React.FC = () => {
                     ${selectedProduct.price}
                   </Text>
                   <View style={{gap: 10}}>
-                    <TouchableOpacity
-                      style={styles.grayButton}
-                      onPress={() => handleDeleteProduct(selectedProduct.id)}>
-                      <Text style={styles.text}>{constant.productDelete}</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      style={styles.lightGrayButton}
-                      onPress={() => handleUpdateProduct(selectedProduct.id)}>
-                      <Text style={styles.text}>{constant.productUpdate}</Text>
-                    </TouchableOpacity>
+                    <Button
+                      label={constant.productDelete}
+                      onPress={() => handleDeleteProduct(selectedProduct.id)}
+                      buttonStyle={styles.grayButton}
+                      textStyle={styles.text}
+                    />
+                    <Button
+                      label={constant.productUpdate}
+                      onPress={() => handleUpdateProduct(selectedProduct.id)}
+                      buttonStyle={styles.lightGrayButton}
+                      textStyle={styles.text}
+                    />
                   </View>
                 </View>
               )}
@@ -288,19 +308,25 @@ const ProductList: React.FC = () => {
           }
           keyboardType="numeric"
         />
-        <TouchableOpacity onPress={handleOpenGallery}>
-          <Text style={styles.text}>{constant.openGallery}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.grayButton} onPress={handleAddProduct}>
-          <Text style={styles.text}>{constant.addProduct}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          style={styles.lightGrayButton}
-          onPress={() => setAddProductModalVisible(false)}>
-          <Text style={styles.text}>{constant.cancel}</Text>
-        </TouchableOpacity>
+        <Button
+          label={constant.openGallery}
+          onPress={handleOpenGallery}
+          textStyle={styles.text}
+        />
+        <Button
+          label={constant.addProduct}
+          onPress={handleAddProduct}
+          buttonStyle={styles.grayButton}
+          textStyle={styles.text}
+        />
+        <Button
+          label={constant.cancel}
+          onPress={() => setAddProductModalVisible(false)}
+          buttonStyle={styles.lightGrayButton}
+          textStyle={styles.text}
+        />
       </DetalisModal>
-    </View>
+    </SafeAreaView>
   );
 };
 
