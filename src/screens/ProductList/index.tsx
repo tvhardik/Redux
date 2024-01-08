@@ -26,20 +26,20 @@ import {
 } from '../../redux/product/index';
 import {images} from '../../assets';
 import {constant} from '../../constant';
-import {DetalisModal, CustomTextInput, Button} from '../../components';
+import {DetalisModal, Button, SelectedProductModal} from '../../components';
+import {windowWidth} from '../../utils/help';
 import {colors} from '../../theme/colors';
 import {styles} from './styles';
 
 const ProductList: React.FC = () => {
   const dispatch: any = useDispatch();
-  const windowWidth = Dimensions.get('window').width;
   const products = useSelector((state: any) => state.products.products);
 
   const [isUpdateModalVisible, setUpdateModalVisible] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
   const [selectedImage, setSelectedImage] = useState<any>(null);
   const [isAddProductModalVisible, setAddProductModalVisible] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
+  const [isDetalisModalVisible, setDetalisModalVisible] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
 
   const [newProduct, setNewProduct] = useState<any>({
@@ -97,7 +97,7 @@ const ProductList: React.FC = () => {
 
   const handleAddProduct = () => {
     if (!newProduct.title || !newProduct.price || !newProduct.image) {
-      Alert.alert('Please fill in all the required fields.');
+      Alert.alert(constant.error);
       return;
     }
     dispatch(addProduct(newProduct));
@@ -128,20 +128,20 @@ const ProductList: React.FC = () => {
 
   const openModal = (item: any) => {
     setSelectedProduct(item);
-    setModalVisible(true);
+    setDetalisModalVisible(true);
   };
 
   const closeModal = () => {
-    setModalVisible(false);
+    setDetalisModalVisible(false);
     setSelectedProduct(null);
   };
 
   const handleDeleteProduct = (productId: number) => {
     dispatch(deleteProduct(productId));
-    setModalVisible(false);
+    setDetalisModalVisible(false);
   };
 
-  const renderCarouselItem = ({item}) => (
+  const renderCarouselItem = ({item}: any) => (
     <Pressable
       style={({pressed}) => [pressed && {opacity: 0.2}, {flex: 1}]}
       onPress={() => openModal(item)}>
@@ -201,91 +201,6 @@ const ProductList: React.FC = () => {
             numColumns={2}
             renderItem={renderCarouselItem}
           />
-          <DetalisModal isVisible={isUpdateModalVisible}>
-            <CustomTextInput
-              placeholder={constant.updatedTitle}
-              value={updatedProduct.title}
-              onChangeText={text =>
-                setUpdatedProduct({...updatedProduct, title: text})
-              }
-            />
-            <CustomTextInput
-              placeholder={constant.updatedPrice}
-              value={updatedProduct.price}
-              onChangeText={text =>
-                setUpdatedProduct({...updatedProduct, price: text})
-              }
-              keyboardType="numeric"
-            />
-            <Button
-              label={constant.openGallery}
-              onPress={handleOpenGallery}
-              textStyle={styles.text}
-            />
-            <Button
-              label={constant.saveUpdate}
-              onPress={handleSaveUpdate}
-              buttonStyle={styles.grayButton}
-              textStyle={styles.text}
-            />
-            <Button
-              label={constant.cancel}
-              onPress={() => setUpdateModalVisible(false)}
-              buttonStyle={styles.lightGrayButton}
-              textStyle={styles.text}
-            />
-          </DetalisModal>
-          <Modal
-            isVisible={modalVisible}
-            onBackdropPress={closeModal}
-            swipeDirection="down"
-            style={{justifyContent: 'flex-end', margin: 0}}>
-            <View style={styles.openEndModalContanier}>
-              {selectedProduct && (
-                <View style={{gap: 10}}>
-                  <Text style={styles.SelectedProductTitle}>
-                    {selectedProduct.title}
-                  </Text>
-                  <Image
-                    source={{uri: selectedProduct.image}}
-                    style={styles.SelectedProductImage}
-                    resizeMode="contain"
-                  />
-                  <Text style={styles.SelectedProductCategory}>
-                    {selectedProduct.category}
-                  </Text>
-                  <View style={styles.ratingStarContainer}>
-                    <StarRating
-                      disabled={true}
-                      maxStars={5}
-                      rating={selectedProduct?.rating?.rate}
-                      starSize={15}
-                      emptyStar={images.emptyStar}
-                      fullStar={images.fullStar}
-                      halfStar={images.halfStar}
-                    />
-                  </View>
-                  <Text style={styles.SelectedProductPrice}>
-                    ${selectedProduct.price}
-                  </Text>
-                  <View style={{gap: 10}}>
-                    <Button
-                      label={constant.productDelete}
-                      onPress={() => handleDeleteProduct(selectedProduct.id)}
-                      buttonStyle={styles.grayButton}
-                      textStyle={styles.text}
-                    />
-                    <Button
-                      label={constant.productUpdate}
-                      onPress={() => handleUpdateProduct(selectedProduct.id)}
-                      buttonStyle={styles.lightGrayButton}
-                      textStyle={styles.text}
-                    />
-                  </View>
-                </View>
-              )}
-            </View>
-          </Modal>
         </View>
       </ScrollView>
       <TouchableOpacity
@@ -293,39 +208,77 @@ const ProductList: React.FC = () => {
         onPress={() => setAddProductModalVisible(true)}>
         <Image style={styles.addProductIcon} source={images.addProduct} />
       </TouchableOpacity>
-      <DetalisModal isVisible={isAddProductModalVisible}>
-        <Text style={styles.newProductAddText}>{constant.addNewProduct}</Text>
-        <CustomTextInput
-          placeholder={constant.title}
-          value={newProduct.title}
-          onChangeText={text => setNewProduct({...newProduct, title: text})}
-        />
-        <CustomTextInput
-          placeholder={constant.price}
-          value={newProduct.price.toString()}
-          onChangeText={text =>
-            setNewProduct({...newProduct, price: Number(text)})
-          }
-          keyboardType="numeric"
-        />
-        <Button
-          label={constant.openGallery}
-          onPress={handleOpenGallery}
-          textStyle={styles.text}
-        />
-        <Button
-          label={constant.addProduct}
-          onPress={handleAddProduct}
-          buttonStyle={styles.grayButton}
-          textStyle={styles.text}
-        />
-        <Button
-          label={constant.cancel}
-          onPress={() => setAddProductModalVisible(false)}
-          buttonStyle={styles.lightGrayButton}
-          textStyle={styles.text}
-        />
-      </DetalisModal>
+
+      {/* DetalisModal */}
+      <DetalisModal
+        isVisible={isAddProductModalVisible || isUpdateModalVisible}
+        isUpdate={isUpdateModalVisible}
+        product={{
+          title: isUpdateModalVisible ? updatedProduct.title : newProduct.title,
+          price: isUpdateModalVisible
+            ? updatedProduct.price
+            : newProduct.price.toString(),
+          onChangeTitle: text => {
+            if (isUpdateModalVisible) {
+              setUpdatedProduct({...updatedProduct, title: text});
+            } else {
+              setNewProduct({...newProduct, title: text});
+            }
+          },
+          onChangePrice: text => {
+            if (isUpdateModalVisible) {
+              setUpdatedProduct({...updatedProduct, price: text});
+            } else {
+              setNewProduct({...newProduct, price: Number(text)});
+            }
+          },
+        }}
+        label={isUpdateModalVisible ? constant.productUpdate : constant.save}
+        handleOpenGallery={handleOpenGallery}
+        handleSave={isUpdateModalVisible ? handleSaveUpdate : handleAddProduct}
+        handleClose={() => {
+          isUpdateModalVisible
+            ? setUpdateModalVisible(false)
+            : setAddProductModalVisible(false);
+        }}
+      />
+
+      {/* Selected Product modal  */}
+      <SelectedProductModal
+        isVisible={isDetalisModalVisible}
+        onBackdropPress={closeModal}
+        handleUpdate={() => handleUpdateProduct(selectedProduct.id)}
+        handleDelete={() => handleDeleteProduct(selectedProduct.id)}>
+        {selectedProduct && (
+          <View style={{gap: 10}}>
+            <Text style={styles.SelectedProductTitle}>
+              {selectedProduct.title}
+            </Text>
+            <Image
+              source={{uri: selectedProduct.image}}
+              style={styles.SelectedProductImage}
+              resizeMode="contain"
+            />
+            <Text style={styles.SelectedProductCategory}>
+              {selectedProduct.category}
+            </Text>
+            <View style={styles.ratingStarContainer}>
+              <StarRating
+                disabled={true}
+                maxStars={5}
+                rating={selectedProduct?.rating?.rate}
+                starSize={15}
+                emptyStar={images.emptyStar}
+                fullStar={images.fullStar}
+                halfStar={images.halfStar}
+              />
+            </View>
+            <Text style={styles.SelectedProductPrice}>
+              ${selectedProduct.price}
+            </Text>
+          </View>
+        )}
+      </SelectedProductModal>
     </SafeAreaView>
   );
 };

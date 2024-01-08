@@ -1,7 +1,8 @@
 export const constant = {
   moreProduct: 'More Product',
   openGallery: 'Open Gallery',
-  saveUpdate: 'Save Update',
+  save: 'Save Product',
+  updateProduct: 'Update Product',
   cancel: 'Cancel',
   productDelete: 'Product Delete',
   productUpdate: 'Product Update',
@@ -12,4 +13,5 @@ export const constant = {
   title: 'Title',
   price: 'Price',
   highRatingProduct: 'High rating product',
+  error: 'Please fill in all the required fields.',
 };

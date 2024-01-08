@@ -10,7 +10,7 @@ export const fetchProducts = createAsyncThunk(
       const response = await axios.get<Product[]>(
         'https://fakestoreapi.com/products',
       );
-      console.log('response get-----', response);
+      // console.log('response get-----', response);
       return response.data;
     } catch (error) {
       console.error('Error fetching products', error);
@@ -28,7 +28,7 @@ export const addProduct = createAsyncThunk(
         'https://fakestoreapi.com/products',
         newProduct,
       );
-      console.log('response post-----', response);
+      // console.log('response post-----', response);
       return response.data;
     } catch (error) {
       console.error('Error adding product:', error);
@@ -45,7 +45,7 @@ export const deleteProduct = createAsyncThunk(
       const response = await axios.delete(
         `https://fakestoreapi.com/products/${productId}`,
       );
-      console.log('response delete-----', response);
+      // console.log('response delete-----', response);
       return productId;
     } catch (error) {
       console.error(`Error deleting product ${productId}:`, error);
@@ -69,7 +69,7 @@ export const updateProduct = createAsyncThunk(
         `https://fakestoreapi.com/products/${productId}`,
         updatedProduct,
       );
-      console.log('response put-----', response);
+      // console.log('response put-----', response);
       return response.data;
     } catch (error) {
       console.error(`Error updating product ${productId}:`, error);
