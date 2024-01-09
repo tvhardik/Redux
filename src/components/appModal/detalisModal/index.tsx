@@ -4,6 +4,7 @@ import {View} from 'react-native';
 import {Button, CustomTextInput} from '../../index';
 import {constant} from '../../../constant/index';
 import {styles} from './style';
+import {externalStyle} from '../../../theme/externalStyle';
 interface DetalisModalProps {
   isVisible: boolean;
   isUpdate: boolean;
@@ -49,13 +50,13 @@ const DetalisModal: React.FC<DetalisModalProps> = ({
         <Button
           label={label}
           onPress={handleSave}
-          buttonStyle={styles.grayButton}
+          buttonStyle={externalStyle.grayButton}
           textStyle={styles.text}
         />
         <Button
           label={constant.cancel}
           onPress={handleClose}
-          buttonStyle={styles.lightGrayButton}
+          buttonStyle={externalStyle.lightGrayButton}
           textStyle={styles.text}
         />
       </View>

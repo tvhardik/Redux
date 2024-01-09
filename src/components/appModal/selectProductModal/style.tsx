@@ -1,10 +1,12 @@
 import {StyleSheet} from 'react-native';
 import {colors} from '../../../theme/colors';
+import {fontFamily} from '../../../theme/fonts';
 
 export const styles = StyleSheet.create({
   openEndModalContanier: {
     backgroundColor: colors.white,
     padding: 20,
+    gap: 10,
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
   },
@@ -14,7 +16,7 @@ export const styles = StyleSheet.create({
   SelectedProductTitle: {
     fontSize: 18,
     textAlign: 'center',
-    fontWeight: '700',
+    fontFamily: fontFamily.Bold,
     color: colors.black,
   },
   SelectedProductImage: {
@@ -24,12 +26,14 @@ export const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   text: {
+    fontSize: 17,
     color: colors.black,
     textAlign: 'center',
+    fontFamily: fontFamily.Medium,
   },
   SelectedProductCategory: {
-    fontSize: 14,
-    fontWeight: '500',
+    fontSize: 17,
+    fontFamily: fontFamily.Regular,
     color: colors.black,
     textAlign: 'center',
   },
@@ -38,35 +42,10 @@ export const styles = StyleSheet.create({
   },
   ratingStarContainer: {
     paddingHorizontal: 80,
-    gap: 10,
   },
   SelectedProductPrice: {
     fontSize: 16,
-    fontWeight: '600',
+    fontFamily: fontFamily.Bold,
     color: colors.black,
-  },
-  grayButton: {
-    shadowColor: colors.black,
-    shadowOffset: {width: 0, height: 1},
-    shadowOpacity: 0.8,
-    shadowRadius: 2,
-    elevation: 5,
-    backgroundColor: colors.darkGray,
-    borderRadius: 8,
-    height: 40,
-    justifyContent: 'center',
-    alignContent: 'center',
-  },
-  lightGrayButton: {
-    shadowColor: colors.black,
-    shadowOffset: {width: 0, height: 1},
-    shadowOpacity: 0.8,
-    shadowRadius: 2,
-    elevation: 5,
-    backgroundColor: colors.lightGray,
-    borderRadius: 8,
-    height: 40,
-    justifyContent: 'center',
-    alignContent: 'center',
   },
 });

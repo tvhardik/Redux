@@ -7,15 +7,12 @@ import {
   TouchableOpacity,
   ScrollView,
   Appearance,
-  Dimensions,
   Alert,
   SafeAreaView,
   Pressable,
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import ImagePicker from 'react-native-image-crop-picker';
-import StarRating from 'react-native-star-rating';
-import Modal from 'react-native-modal';
 import Carousel, {Pagination} from 'react-native-snap-carousel';
 import {Product} from '../../redux/product/type';
 import {
@@ -26,7 +23,7 @@ import {
 } from '../../redux/product/index';
 import {images} from '../../assets';
 import {constant} from '../../constant';
-import {DetalisModal, Button, SelectedProductModal} from '../../components';
+import {DetalisModal, SelectedProductModal} from '../../components';
 import {windowWidth} from '../../utils/help';
 import {colors} from '../../theme/colors';
 import {styles} from './styles';
@@ -42,12 +39,7 @@ const ProductList: React.FC = () => {
   const [isDetalisModalVisible, setDetalisModalVisible] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
 
-  const [newProduct, setNewProduct] = useState<any>({
-    title: '',
-    price: '',
-    image: '',
-  });
-  const [updatedProduct, setUpdatedProduct] = useState<any>({
+  const [product, setProduct] = useState<any>({
     title: '',
     price: '',
     image: '',
@@ -82,7 +74,7 @@ const ProductList: React.FC = () => {
       (product: Product) => product.id === productId,
     );
 
-    setUpdatedProduct({
+    setProduct({
       title: productToUpdate.title,
       price: productToUpdate.price.toString(),
       image: productToUpdate.image,
@@ -91,33 +83,29 @@ const ProductList: React.FC = () => {
 
   const handleSaveUpdate = () => {
     closeModal();
-    dispatch(updateProduct({productId: selectedProduct.id, updatedProduct}));
+    dispatch(
+      updateProduct({productId: selectedProduct.id, updatedProduct: product}),
+    );
     setUpdateModalVisible(false);
   };
 
   const handleAddProduct = () => {
-    if (!newProduct.title || !newProduct.price || !newProduct.image) {
+    if (!product.title || !product.price || !product.image) {
       Alert.alert(constant.error);
       return;
     }
-    dispatch(addProduct(newProduct));
+    dispatch(addProduct(product));
     setAddProductModalVisible(false);
   };
 
   const handleOpenGallery = async () => {
     try {
       const selectedImage = await ImagePicker.openPicker({
-        width: 300,
-        height: 400,
         cropping: true,
       });
       setSelectedImage(selectedImage.path);
-      setNewProduct({
-        ...newProduct,
-        image: selectedImage.path,
-      });
-      setUpdatedProduct({
-        ...updatedProduct,
+      setProduct({
+        ...product,
         image: selectedImage.path,
       });
       console.log('image.path', selectedImage.path);
@@ -160,7 +148,7 @@ const ProductList: React.FC = () => {
 
   return (
     <SafeAreaView>
-      <ScrollView>
+      <ScrollView nestedScrollEnabled={true}>
         <Image source={images.shoppingPoster} style={styles.posterImage} />
         <View
           style={[
@@ -214,24 +202,14 @@ const ProductList: React.FC = () => {
         isVisible={isAddProductModalVisible || isUpdateModalVisible}
         isUpdate={isUpdateModalVisible}
         product={{
-          title: isUpdateModalVisible ? updatedProduct.title : newProduct.title,
-          price: isUpdateModalVisible
-            ? updatedProduct.price
-            : newProduct.price.toString(),
-          onChangeTitle: text => {
-            if (isUpdateModalVisible) {
-              setUpdatedProduct({...updatedProduct, title: text});
-            } else {
-              setNewProduct({...newProduct, title: text});
-            }
-          },
-          onChangePrice: text => {
-            if (isUpdateModalVisible) {
-              setUpdatedProduct({...updatedProduct, price: text});
-            } else {
-              setNewProduct({...newProduct, price: Number(text)});
-            }
-          },
+          title: isUpdateModalVisible ? product.title : null,
+          price: isUpdateModalVisible ? product.price : null,
+          onChangeTitle: text => setProduct({...product, title: text}),
+          onChangePrice: text =>
+            setProduct({
+              ...product,
+              price: isUpdateModalVisible ? text : Number(text),
+            }),
         }}
         label={isUpdateModalVisible ? constant.productUpdate : constant.save}
         handleOpenGallery={handleOpenGallery}
@@ -243,42 +221,18 @@ const ProductList: React.FC = () => {
         }}
       />
 
-      {/* Selected Product modal  */}
+      {/* Selected Product modal */}
       <SelectedProductModal
         isVisible={isDetalisModalVisible}
         onBackdropPress={closeModal}
         handleUpdate={() => handleUpdateProduct(selectedProduct.id)}
-        handleDelete={() => handleDeleteProduct(selectedProduct.id)}>
-        {selectedProduct && (
-          <View style={{gap: 10}}>
-            <Text style={styles.SelectedProductTitle}>
-              {selectedProduct.title}
-            </Text>
-            <Image
-              source={{uri: selectedProduct.image}}
-              style={styles.SelectedProductImage}
-              resizeMode="contain"
-            />
-            <Text style={styles.SelectedProductCategory}>
-              {selectedProduct.category}
-            </Text>
-            <View style={styles.ratingStarContainer}>
-              <StarRating
-                disabled={true}
-                maxStars={5}
-                rating={selectedProduct?.rating?.rate}
-                starSize={15}
-                emptyStar={images.emptyStar}
-                fullStar={images.fullStar}
-                halfStar={images.halfStar}
-              />
-            </View>
-            <Text style={styles.SelectedProductPrice}>
-              ${selectedProduct.price}
-            </Text>
-          </View>
-        )}
-      </SelectedProductModal>
+        handleDelete={() => handleDeleteProduct(selectedProduct.id)}
+        price={selectedProduct ? selectedProduct.price : ''}
+        title={selectedProduct ? selectedProduct.title : ''}
+        category={selectedProduct ? selectedProduct.category : ''}
+        source={selectedProduct ? selectedProduct.image : ''}
+        ratingData={selectedProduct?.rating?.rate}
+      />
     </SafeAreaView>
   );
 };

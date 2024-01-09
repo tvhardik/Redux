@@ -1,5 +1,6 @@
 import {StyleSheet} from 'react-native';
 import {colors} from '../../theme/colors';
+import {fontFamily} from '../../theme/fonts';
 
 export const styles = StyleSheet.create({
   productContainer: {
@@ -29,7 +30,7 @@ export const styles = StyleSheet.create({
   title: {
     textAlign: 'center',
     fontSize: 12,
-    fontWeight: '500',
+    fontFamily: fontFamily.Medium,
     color: colors.black,
     bottom: 5,
   },
@@ -43,7 +44,7 @@ export const styles = StyleSheet.create({
     color: colors.black,
     left: 10,
     fontSize: 15,
-    fontWeight: '600',
+    fontFamily: fontFamily.Bold,
     position: 'absolute',
     bottom: 5,
   },
@@ -59,64 +60,6 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   addProductIcon: {width: 30, height: 30, resizeMode: 'center'},
-  modalBackground: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  SelectedProductImage: {
-    height: 150,
-    width: 150,
-    resizeMode: 'center',
-    alignSelf: 'center',
-  },
-  SelectedProductTitle: {
-    fontSize: 18,
-    textAlign: 'center',
-    fontWeight: '700',
-    color: colors.black,
-  },
-  SelectedProductPrice: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.black,
-  },
-  SelectedProductCategory: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: colors.black,
-    textAlign: 'center',
-  },
-  openEndModalContanier: {
-    backgroundColor: colors.white,
-    padding: 20,
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
-  },
-  grayButton: {
-    shadowColor: colors.black,
-    shadowOffset: {width: 0, height: 1},
-    shadowOpacity: 0.8,
-    shadowRadius: 2,
-    elevation: 5,
-    backgroundColor: colors.darkGray,
-    borderRadius: 8,
-    height: 40,
-    justifyContent: 'center',
-    alignContent: 'center',
-  },
-  lightGrayButton: {
-    shadowColor: colors.black,
-    shadowOffset: {width: 0, height: 1},
-    shadowOpacity: 0.8,
-    shadowRadius: 2,
-    elevation: 5,
-    backgroundColor: colors.lightGray,
-    borderRadius: 8,
-    height: 40,
-    justifyContent: 'center',
-    alignContent: 'center',
-  },
   text: {
     color: colors.black,
     textAlign: 'center',
@@ -133,12 +76,8 @@ export const styles = StyleSheet.create({
   },
   moreProductText: {
     fontSize: 20,
-    fontWeight: '700',
+    fontFamily: fontFamily.Bold,
     paddingHorizontal: 20,
-  },
-  ratingStarContainer: {
-    paddingHorizontal: 80,
-    gap: 10,
   },
   posterImage: {
     width: '100%',
