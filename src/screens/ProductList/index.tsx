@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -11,26 +11,25 @@ import {
   SafeAreaView,
   Pressable,
 } from 'react-native';
-import {useSelector, useDispatch} from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import ImagePicker from 'react-native-image-crop-picker';
-import Carousel, {Pagination} from 'react-native-snap-carousel';
-import {Product} from '../../redux/product/type';
+import Carousel, { Pagination } from 'react-native-snap-carousel';
 import {
   addProduct,
   deleteProduct,
   fetchProducts,
   updateProduct,
 } from '../../redux/product/index';
-import {images} from '../../assets';
-import {constant} from '../../constant';
-import {DetalisModal, SelectedProductModal} from '../../components';
-import {windowWidth} from '../../utils/help';
-import {colors} from '../../theme/colors';
-import {styles} from './styles';
+import { images } from '../../assets';
+import { constant } from '../../constant';
+import { DetalisModal, SelectedProductModal } from '../../components';
+import { windowWidth } from '../../utils/help';
+import { colors } from '../../theme/colors';
+import { styles } from './styles';
 
 const ProductList: React.FC = () => {
   const dispatch: any = useDispatch();
-  const products = useSelector((state: any) => state.products.products);
+  const ApiData = useSelector((state: any) => state.products.products);
 
   const [isUpdateModalVisible, setUpdateModalVisible] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
@@ -38,7 +37,7 @@ const ProductList: React.FC = () => {
   const [isAddProductModalVisible, setAddProductModalVisible] = useState(false);
   const [isDetalisModalVisible, setDetalisModalVisible] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<any>(null);
-
+  const [ProductData, setProductData] = useState<any>([]);
   const [product, setProduct] = useState<any>({
     title: '',
     price: '',
@@ -63,17 +62,20 @@ const ProductList: React.FC = () => {
     dispatch(fetchProducts());
   }, [dispatch]);
 
-  const highRatedProducts = products.filter(
-    (item: {rating: {rate: number}}) =>
+  useEffect(() => {
+    setProductData(ApiData);
+  }, [ApiData]);
+
+  const highRatedProducts = ProductData.filter(
+    (item: { rating: { rate: number } }) =>
       item.rating?.rate >= 4 && item.rating.rate <= 5,
   );
 
   const handleUpdateProduct = (productId: number) => {
     setUpdateModalVisible(true);
-    const productToUpdate = products.find(
-      (product: Product) => product.id === productId,
+    const productToUpdate = ProductData.find(
+      (product: any) => product.id === productId,
     );
-
     setProduct({
       title: productToUpdate.title,
       price: productToUpdate.price.toString(),
@@ -83,9 +85,13 @@ const ProductList: React.FC = () => {
 
   const handleSaveUpdate = () => {
     closeModal();
-    dispatch(
-      updateProduct({productId: selectedProduct.id, updatedProduct: product}),
-    );
+    const updatedProducts = ProductData.map((p: any) => {
+      if (p.id === selectedProduct.id) {
+        return { ...p, ...product };
+      }
+      return p;
+    });
+    setProductData(updatedProducts);
     setUpdateModalVisible(false);
   };
 
@@ -94,7 +100,9 @@ const ProductList: React.FC = () => {
       Alert.alert(constant.error);
       return;
     }
-    dispatch(addProduct(product));
+
+    const newProduct = { id: Date.now(), ...product };
+    setProductData([...ProductData, newProduct]);
     setAddProductModalVisible(false);
   };
 
@@ -125,17 +133,20 @@ const ProductList: React.FC = () => {
   };
 
   const handleDeleteProduct = (productId: number) => {
-    dispatch(deleteProduct(productId));
+    const updatedProducts = ProductData.filter(
+      (product: any) => product.id !== productId,
+    );
+    setProductData(updatedProducts);
     setDetalisModalVisible(false);
   };
 
-  const renderCarouselItem = ({item}: any) => (
+  const renderCarouselItem = ({ item }: any) => (
     <Pressable
-      style={({pressed}) => [pressed && {opacity: 0.2}, {flex: 1}]}
+      style={({ pressed }) => [pressed && { opacity: 0.2 }, { flex: 1 }]}
       onPress={() => openModal(item)}>
       <View style={styles.productContainer}>
         <Image
-          source={{uri: item.image}}
+          source={{ uri: item.image }}
           style={styles.productImage}
           resizeMode="contain"
         />
@@ -169,7 +180,7 @@ const ProductList: React.FC = () => {
           <Pagination
             dotsLength={highRatedProducts.length}
             activeDotIndex={activeSlide}
-            containerStyle={{marginTop: -20}}
+            containerStyle={{ marginTop: -20 }}
             dotStyle={styles.dotStyle}
             inactiveDotOpacity={0.6}
             inactiveDotScale={0.8}
@@ -184,7 +195,7 @@ const ProductList: React.FC = () => {
             </Text>
           </View>
           <FlatList
-            data={products}
+            data={ProductData}
             keyExtractor={item => item.id.toString()}
             numColumns={2}
             renderItem={renderCarouselItem}
@@ -204,7 +215,7 @@ const ProductList: React.FC = () => {
         product={{
           title: isUpdateModalVisible ? product.title : null,
           price: isUpdateModalVisible ? product.price : null,
-          onChangeTitle: text => setProduct({...product, title: text}),
+          onChangeTitle: text => setProduct({ ...product, title: text }),
           onChangePrice: text =>
             setProduct({
               ...product,
