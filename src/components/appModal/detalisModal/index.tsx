@@ -1,10 +1,11 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Modal from 'react-native-modal';
 import {View} from 'react-native';
 import {Button, CustomTextInput} from '../../index';
-import {constant} from '../../../constant/index';
+import {constant, inputConfigs} from '../../../constant/index';
 import {styles} from './style';
 import {externalStyle} from '../../../theme/externalStyle';
+import {colors} from '../../../theme/colors';
 interface DetalisModalProps {
   isVisible: boolean;
   isUpdate: boolean;
@@ -42,6 +43,15 @@ const DetalisModal: React.FC<DetalisModalProps> = ({
           onChangeText={(text: string) => product.onChangePrice(text)}
           keyboardType="numeric"
         />
+        {/* {inputConfigs.map((config, index) => (
+          <CustomTextInput
+            key={index}
+            placeholder={config.placeholder}
+            value={config.value}
+            onChangeText={(text: string) => config.onChangeText(text)}
+            keyboardType={config.keyboardType}
+          />
+        ))} */}
         <Button
           label={constant.openGallery}
           onPress={handleOpenGallery}
@@ -50,13 +60,19 @@ const DetalisModal: React.FC<DetalisModalProps> = ({
         <Button
           label={label}
           onPress={handleSave}
-          buttonStyle={externalStyle.grayButton}
+          buttonStyle={[
+            externalStyle.Button,
+            {backgroundColor: colors.lightGray},
+          ]}
           textStyle={styles.text}
         />
         <Button
           label={constant.cancel}
           onPress={handleClose}
-          buttonStyle={externalStyle.lightGrayButton}
+          buttonStyle={[
+            externalStyle.Button,
+            {backgroundColor: colors.darkGray},
+          ]}
           textStyle={styles.text}
         />
       </View>

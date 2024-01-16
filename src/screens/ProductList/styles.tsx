@@ -20,6 +20,7 @@ export const styles = StyleSheet.create({
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
     paddingTop: 30,
+    backgroundColor: colors.lightMode,
   },
   productImage: {
     height: 100,

@@ -7,6 +7,7 @@ import {Button} from '../../index';
 import {images} from '../../../assets';
 import {styles} from './style';
 import {externalStyle} from '../../../theme/externalStyle';
+import {colors} from '../../../theme/colors';
 
 interface SelectedProductModalProps {
   isVisible: boolean;
@@ -61,13 +62,19 @@ const SelectedProductModal: React.FC<SelectedProductModalProps> = ({
           <Button
             label={constant.productDelete}
             onPress={handleDelete}
-            buttonStyle={externalStyle.grayButton}
+            buttonStyle={[
+              externalStyle.Button,
+              {backgroundColor: colors.lightGray},
+            ]}
             textStyle={styles.text}
           />
           <Button
             label={constant.productUpdate}
             onPress={handleUpdate}
-            buttonStyle={externalStyle.lightGrayButton}
+            buttonStyle={[
+              externalStyle.Button,
+              {backgroundColor: colors.darkGray},
+            ]}
             textStyle={styles.text}
           />
         </View>

@@ -23,7 +23,7 @@ import {
 import { images } from '../../assets';
 import { constant } from '../../constant';
 import { DetalisModal, SelectedProductModal } from '../../components';
-import { windowWidth } from '../../utils/help';
+import {windowWidth} from '../../utils/helper';
 import { colors } from '../../theme/colors';
 import { styles } from './styles';
 

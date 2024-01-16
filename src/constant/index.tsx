@@ -15,3 +15,17 @@ export const constant = {
   highRatingProduct: 'High rating product',
   error: 'Please fill in all the required fields.',
 };
+
+export const inputConfigs = [
+  {
+    placeholder: constant.title,
+    value: '',
+    onChangeText: (text: string) => {},
+  },
+  {
+    placeholder: constant.price,
+    value: '',
+    onChangeText: (text: string) => {},
+    keyboardType: 'numeric',
+  },
+];

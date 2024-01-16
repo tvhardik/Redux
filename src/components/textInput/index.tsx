@@ -7,7 +7,7 @@ interface CustomTextInputProps {
   placeholder: string;
   value: string;
   onChangeText: (text: string) => void;
-  keyboardType?: 'numeric' | 'email-address';
+  keyboardType?: 'numeric';
 }
 
 const CustomTextInput: FC<CustomTextInputProps> = ({
