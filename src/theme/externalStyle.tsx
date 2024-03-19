@@ -20,4 +20,7 @@ export const externalStyle = StyleSheet.create({
     textAlign: 'center',
     fontFamily: fontFamily.Medium,
   },
+  flex1: {
+    flex: 1,
+  },
 });
